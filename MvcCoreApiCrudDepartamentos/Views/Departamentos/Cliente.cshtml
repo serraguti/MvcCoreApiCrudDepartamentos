@@ -1,0 +1,68 @@
+﻿@section Scripts {
+    <script>
+        var urlApi = "https://apicorecruddepartamentos2023.azurewebsites.net/";
+        $(document).ready(function() {
+            cargarDepartamentos();
+            $("#botondelete").click(function() {
+                var id = $("#cajaid").val();
+                var request = "/api/departamentos/" + id;
+                $.ajax({
+                    url: urlApi + request,
+                    method: "DELETE",
+                    success: function() {
+                        cargarDepartamentos();
+                    }
+                })
+            })
+        })
+
+        function cargarDepartamentos() {
+            var request = "/api/departamentos";
+            $.ajax({
+                url: urlApi + request,
+                method: "GET",
+                dataType: "json",
+                success: function(data){
+                    var html = "";
+                    $.each(data, function(index, dept){
+                        html += "<tr>";
+                        html += "<td>" + dept.idDepartamento + "</td>";
+                        html += "<td>" + dept.nombre + "</td>";
+                        html += "<td>" + dept.localidad + "</td>";
+                        html += "</tr>";
+                        $("#tabladepartamentos tbody").html(html);
+                    })
+                }
+            })
+        }
+    </script>
+}
+
+<h1 style="color:blue">Api Crud departamentos Cliente</h1>
+
+<label>Id departamento: </label>
+<input type="text" id="cajaid" class="form-control"/>
+<label>Nombre: </label>
+<input type="text" id="cajanombre" class="form-control"/>
+<label>Localidad: </label>
+<input type="text" id="cajalocalidad" class="form-control"/>
+<button type="button" id="botoninsertar" class="btn btn-outline-dark">
+    Insert
+</button>
+<button type="button" id="botonupdate" class="btn btn-outline-info">
+    Update
+</button>
+<button type="button" id="botondelete" class="btn btn-outline-danger">
+    Delete
+</button>
+<hr/>
+<table class="table table-bordered" id="tabladepartamentos">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
