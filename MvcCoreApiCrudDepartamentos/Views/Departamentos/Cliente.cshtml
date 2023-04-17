@@ -1,38 +1,46 @@
 ﻿@section Scripts {
+    <script src="~/js/serviceapidepartamentos.js"></script>
     <script>
-        var urlApi = "https://apicorecruddepartamentos2023.azurewebsites.net/";
         $(document).ready(function() {
-            cargarDepartamentos();
+            cargarTablaDepartamentos();
             $("#botondelete").click(function() {
                 var id = $("#cajaid").val();
-                var request = "/api/departamentos/" + id;
-                $.ajax({
-                    url: urlApi + request,
-                    method: "DELETE",
-                    success: function() {
-                        cargarDepartamentos();
-                    }
+                eliminarDepartamentoAsync(id, function() {
+                    cargarTablaDepartamentos();
+                });
+            })
+
+            $("#botoninsertar").click(function() {
+                var num = parseInt($("#cajaid").val());
+                var nom = $("#cajanombre").val();
+                var loc = $("#cajalocalidad").val();
+                insertarDepartamentoAsync(num, nom, loc, function(){
+                    cargarTablaDepartamentos();
+                })
+            })
+
+            $("#botonupdate").click(function() {
+                var num = parseInt($("#cajaid").val());
+                var nom = $("#cajanombre").val();
+                var loc = $("#cajalocalidad").val();
+                updateDepartamentoAsync(num, nom, loc, function(){
+                    cargarTablaDepartamentos();
                 })
             })
         })
 
-        function cargarDepartamentos() {
-            var request = "/api/departamentos";
-            $.ajax({
-                url: urlApi + request,
-                method: "GET",
-                dataType: "json",
-                success: function(data){
-                    var html = "";
-                    $.each(data, function(index, dept){
-                        html += "<tr>";
-                        html += "<td>" + dept.idDepartamento + "</td>";
-                        html += "<td>" + dept.nombre + "</td>";
-                        html += "<td>" + dept.localidad + "</td>";
-                        html += "</tr>";
-                        $("#tabladepartamentos tbody").html(html);
-                    })
-                }
+        function cargarTablaDepartamentos() {
+            getJsonDepartamentosAsync(function (data) {
+                console.log(data);
+                var html = "";
+                $.each(data, function (index, dept) {
+                    html += "<tr>";
+                    html += "<td>" + dept.idDepartamento + "</td>";
+                    html += "<td>" + dept.nombre + "</td>";
+                    html += "<td>" + dept.localidad + "</td>";
+                    html += "</tr>";
+                    $("#tabladepartamentos tbody").html(html);
+                })
             })
         }
     </script>
